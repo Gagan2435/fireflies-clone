@@ -46,5 +46,3 @@ Thumbs.db
 *.sqlite
 .pytest_cache/
 *.tsbuildinfo
- 
-.claude-dev-helper/ 

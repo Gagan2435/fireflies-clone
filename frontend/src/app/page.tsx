@@ -24,8 +24,8 @@ export default function Home() {
     { label: 'Capture Meeting', icon: Plus, cls: 'bg-[#1e1b4b] text-[#a5a0f5]', go: () => openModal('live') },
   ];
   return (
-    <div className="mx-auto w-full max-w-[780px] px-6 pb-16 pt-10">
-      <section className="flex items-center justify-between gap-6 rounded-2xl bg-[#3b2210] px-12 py-9 text-white">
+    <div className="mx-auto w-full max-w-[780px] px-4 pb-16 pt-6 sm:px-6 sm:pt-10">
+      <section className="flex items-center justify-between gap-6 rounded-2xl bg-[#3b2210] px-6 py-7 text-white sm:px-12 sm:py-9">
         <div><h1 className="text-[20px] font-semibold">Welcome Aboard, {(me?.name ?? 'there').toUpperCase()}!</h1>
           <p className="mt-2 max-w-[240px] text-[13px] text-white/60">Fireflies is now ready to automate your meetings and streamline your workflows.</p></div>
         <button onClick={() => comingSoon('The product demo video')} aria-label="Play intro video" className="relative hidden h-[88px] w-[150px] shrink-0 items-center justify-center rounded-lg border-2 border-amber-100/80 bg-gradient-to-br from-[#2a1a6e] to-[#14102e] sm:flex">

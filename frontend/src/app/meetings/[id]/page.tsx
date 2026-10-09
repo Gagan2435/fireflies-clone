@@ -89,7 +89,7 @@ function Detail({ id }: { id: number }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:overflow-hidden">
-      <div className="flex flex-wrap items-center gap-3 border-b border-line px-5 py-3">
+      <div className="flex flex-wrap items-center gap-3 border-b border-line px-3 py-3 sm:px-5">
         <Link href="/meetings" aria-label="Back to meetings" className="rounded p-1 text-mute hover:bg-hover hover:text-ink"><ChevronLeft className="h-4 w-4" /></Link>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-[16px] font-semibold">{m.title}</h1>

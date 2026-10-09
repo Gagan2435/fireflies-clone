@@ -17,7 +17,7 @@ export default function UpgradePage() {
   const current = me?.plan ?? 'Free';
   const price = (annual: number) => (billing === 'annual' ? annual : Math.round(annual / 0.6));
   return (
-    <div className="mx-auto w-full max-w-[1040px] px-6 py-10">
+    <div className="mx-auto w-full max-w-[1040px] px-4 py-8 sm:px-6 sm:py-10">
       <h1 className="text-center text-[26px] font-semibold">You are on the <span className="text-accent">{current}</span> plan</h1>
       <p className="mt-2 text-center text-mute">Compare plans and upgrade when you are ready.</p>
       <div className="mx-auto mt-6 flex w-fit rounded-full bg-hover/60 p-1 text-[12px]" role="radiogroup" aria-label="Billing period">

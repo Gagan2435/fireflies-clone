@@ -21,11 +21,11 @@ export default function Player({ player, duration, title, chapters, soundbites }
         <p className="absolute bottom-2 left-3 max-w-[70%] truncate text-[11px] text-white/80">{title}</p>
         {simulated && <span className="absolute right-3 top-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white/80" title="No audio file is attached to this meeting, so playback is simulated.">Sample playback</span>}
       </div>
-      <div className="flex items-center gap-2 px-3 py-2">
+      <div className="flex items-center gap-1 px-2 py-2 sm:gap-2 sm:px-3">
         <button onClick={() => seek(time - 10)} aria-label="Back 10 seconds" className="rounded p-1 text-mute hover:bg-hover hover:text-ink"><RotateCcw className="h-4 w-4" /></button>
         <button onClick={toggle} aria-label={playing ? 'Pause' : 'Play'} className="rounded p-1 hover:bg-hover">{playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}</button>
         <button onClick={() => seek(time + 10)} aria-label="Forward 10 seconds" className="rounded p-1 text-mute hover:bg-hover hover:text-ink"><RotateCw className="h-4 w-4" /></button>
-        <span className="w-[84px] shrink-0 text-center text-[12px] tabular-nums text-mute">{formatTime(time)} / {formatTime(duration)}</span>
+        <span className="w-[72px] shrink-0 text-center text-[11px] sm:w-[84px] sm:text-[12px] tabular-nums text-mute">{formatTime(time)} / {formatTime(duration)}</span>
         <div className="relative flex h-5 flex-1 items-center">
           <input type="range" min={0} max={Math.max(1, Math.floor(duration))} step={1} value={Math.floor(time)} onChange={e => seek(Number(e.target.value))}
             aria-label="Seek" className="peer z-10 h-1 w-full cursor-pointer appearance-none rounded-full bg-hover accent-accent" style={{ background: `linear-gradient(to right, rgb(var(--accent)) ${pct}%, rgb(var(--hover)) ${pct}%)` }} />

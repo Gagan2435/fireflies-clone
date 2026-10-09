@@ -18,14 +18,14 @@ const groups: Item[][] = [
 ];
 const footer: Item[] = [{ href: '/integrations', label: 'Integrations', icon: Layers }, { href: '/settings', label: 'Settings', icon: Settings }];
 
-export default function Sidebar() {
+export default function Sidebar({ open = false, onClose }: { open?: boolean; onClose?: () => void }) {
   const path = usePathname();
   const { me, comingSoon } = useApp();
   const [mode, setMode] = useStoredState<'full' | 'rail'>('sidebar', 'full');
   const [profile, setProfile] = useState(false);
   const [slide, setSlide] = useState(0);
   const [promo, setPromo] = useStoredState<'on' | 'off'>('sidebar-promo', 'on');
-  const rail = mode === 'rail';
+  const rail = mode === 'rail' && !open;                 // the mobile drawer always shows labels
   const name = me?.name ?? 'User';
   const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 
@@ -40,7 +40,12 @@ export default function Sidebar() {
   );
 
   return (
-    <aside className={cx('flex shrink-0 flex-col border-r border-line bg-panel transition-[width]', rail ? 'w-[52px]' : 'w-[200px]')}>
+    <>
+    {open && <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={onClose} aria-hidden="true" />}
+    <aside className={cx('flex shrink-0 flex-col border-r border-line bg-panel transition-[width]',
+      'max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:w-[230px] max-md:transition-transform',
+      open ? 'max-md:translate-x-0' : 'max-md:-translate-x-full',
+      rail ? 'md:w-[52px]' : 'md:w-[200px]')}>
       <div className="relative flex items-center gap-1 p-2.5">
         <button onClick={() => setProfile(p => !p)} className="flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-hover" aria-label="Account menu" aria-expanded={profile}>
           <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-hover text-[10px] font-bold">{getInitials(name).slice(0, 1)}</span>
@@ -76,9 +81,10 @@ export default function Sidebar() {
             <button key={i} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`} className={cx('h-1 rounded-full', slide === i ? 'w-3 bg-ink' : 'w-1 bg-mute/50')} />))}</div>
         </div>
       )}
-      <button onClick={() => setMode(rail ? 'full' : 'rail')} className="m-2 flex items-center justify-center gap-2 rounded-md p-1.5 text-mute hover:bg-hover hover:text-ink" aria-label={rail ? 'Expand sidebar' : 'Collapse sidebar'}>
+      <button onClick={() => setMode(rail ? 'full' : 'rail')} className="m-2 flex max-md:hidden items-center justify-center gap-2 rounded-md p-1.5 text-mute hover:bg-hover hover:text-ink" aria-label={rail ? 'Expand sidebar' : 'Collapse sidebar'}>
         {rail ? <PanelLeftOpen className="h-4 w-4" /> : <><PanelLeftClose className="h-4 w-4" /><span className="text-[12px]">Collapse</span></>}
       </button>
     </aside>
+    </>
   );
 }

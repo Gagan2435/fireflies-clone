@@ -18,7 +18,7 @@ export default function IntegrationsPage() {
   const isMore = (MORE_FILTERS as readonly string[]).includes(filter);
 
   return (
-    <div className="mx-auto w-full max-w-[920px] px-6 pb-10">
+    <div className="mx-auto w-full max-w-[920px] px-4 pb-10 sm:px-6">
       <div className="flex justify-center border-b border-line">
         {(['discover', 'connected'] as const).map(k => <button key={k} onClick={() => setTab(k)} className={cx('border-b-2 px-4 py-3 text-[13px] capitalize', tab === k ? 'border-accent text-ink' : 'border-transparent text-mute')}>{k}</button>)}
       </div>

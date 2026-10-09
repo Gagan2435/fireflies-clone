@@ -45,7 +45,7 @@ export default function Tasks() {
   const list = (tasks ?? []).filter(t => (tab === 'all' || t.assignee_name === me?.name) && (show === 'all' || (show === 'done') === t.completed));
 
   return (
-    <div className="mx-auto w-full max-w-[760px] px-6 py-6">
+    <div className="mx-auto w-full max-w-[760px] px-4 py-6 sm:px-6">
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex rounded-md bg-hover/60 p-0.5 text-[12px]">{(['mine', 'all'] as const).map(k => <button key={k} onClick={() => setTab(k)} className={cx('rounded px-3 py-1', tab === k ? 'bg-card font-medium shadow-sm' : 'text-mute')}>{k === 'mine' ? 'My Tasks' : 'All Tasks'}</button>)}</div>
         <div className="flex rounded-md bg-hover/60 p-0.5 text-[12px]">{(['open', 'done', 'all'] as const).map(k => <button key={k} onClick={() => setShow(k)} className={cx('rounded px-3 py-1 capitalize', show === k ? 'bg-card font-medium shadow-sm' : 'text-mute')}>{k}</button>)}</div>

@@ -47,7 +47,7 @@ export default function Uploads() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[720px] px-6 py-8">
+    <div className="mx-auto w-full max-w-[720px] px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-4 flex rounded-md bg-hover/60 p-0.5 text-[12px]" role="tablist">
         {([['file', 'Upload a file'], ['paste', 'Paste transcript']] as const).map(([k, l]) => (
           <button key={k} role="tab" aria-selected={mode === k} onClick={() => setMode(k)} className={cx('flex-1 rounded px-3 py-1.5', mode === k ? 'bg-card font-medium shadow-sm' : 'text-mute')}>{l}</button>))}

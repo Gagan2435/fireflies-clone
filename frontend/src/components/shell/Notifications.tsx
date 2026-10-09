@@ -33,7 +33,7 @@ export default function Notifications() {
         <Bell className="h-4 w-4" />{notes.length > 0 && <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-accent" />}
       </button>
       {open && (
-        <div className="menu absolute right-0 top-full z-50 mt-1 w-80 p-1.5">
+        <div className="menu absolute right-0 top-full z-50 mt-1 w-80 max-w-[calc(100vw-1.5rem)] p-1.5">
           <p className="px-2.5 py-1.5 text-[12px] font-semibold">Notifications</p>
           {notes.length === 0 && <p className="px-2.5 py-6 text-center text-mute">You&apos;re all caught up</p>}
           {notes.map(n => (

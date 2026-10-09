@@ -69,7 +69,7 @@ export default function Library() {
               <button key={t} onClick={() => setTab(t)} className={cx('rounded px-2.5 py-1 text-[12px]', tab === t ? 'bg-card font-medium shadow-sm' : 'text-mute')}>{t === 'hosted' ? 'Hosted by me' : 'Shared with me'}</button>))}
           </div>
           <FiltersPopover value={filters} onChange={setFilters} />
-          <div className="relative ml-auto w-full max-w-[240px]"><Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-mute" />
+          <div className="relative w-full sm:ml-auto sm:max-w-[240px]"><Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-mute" />
             <input value={q} onChange={e => setQ(e.target.value)} className="input pl-8" placeholder="Search meetings" aria-label="Search meetings" /></div>
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto p-4">

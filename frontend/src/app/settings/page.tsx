@@ -50,8 +50,8 @@ export default function SettingsPage() {
   else body = <SoonPanel title={current.label} description={current.soon ?? ''} />;
 
   return (
-    <div className="flex min-h-0 flex-1">
-      <nav aria-label="Settings" className="flex w-[240px] shrink-0 flex-col border-r border-line bg-panel p-3">
+    <div className="flex min-h-0 flex-1 flex-col md:flex-row">
+      <nav aria-label="Settings" className="flex max-h-[42vh] w-full shrink-0 flex-col overflow-y-auto border-b border-line bg-panel p-3 md:max-h-none md:w-[240px] md:overflow-visible md:border-b-0 md:border-r">
         <Link href="/" aria-label="Back to app" className="mb-2 w-fit rounded p-1 text-mute hover:bg-hover hover:text-ink"><ArrowLeft className="h-4 w-4" /></Link>
         <div className="mb-3 flex items-center gap-2 px-1">
           <span className="flex h-6 w-6 items-center justify-center rounded bg-hover text-[11px] font-bold">{getInitials(me?.name).slice(0, 1)}</span>
@@ -75,11 +75,11 @@ export default function SettingsPage() {
       </nav>
 
       <div className="min-w-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-[640px] px-6 py-4">
+        <div className="mx-auto w-full max-w-[640px] px-4 py-4 sm:px-6">
           <div className="flex items-center justify-between">
             <label className="relative mx-auto block w-full max-w-[260px]"><Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-mute" />
               <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search settings" aria-label="Search settings" className="input pl-8" /></label>
-            <button onClick={() => toast('Thanks! Feedback is not collected in this demo', { icon: '💬' })} className="absolute right-6 flex items-center gap-1 text-[12px] text-mute hover:text-ink"><MessageSquare className="h-3 w-3" />Feedback</button>
+            <button onClick={() => toast('Thanks! Feedback is not collected in this demo', { icon: '💬' })} className="absolute right-6 hidden items-center gap-1 text-[12px] text-mute hover:text-ink sm:flex"><MessageSquare className="h-3 w-3" />Feedback</button>
           </div>
           {body}
         </div>

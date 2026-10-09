@@ -1,5 +1,5 @@
 'use client';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { AppProvider, useApp } from '@/lib/app-context';
@@ -24,14 +24,23 @@ function Modals() {
 
 /** Settings has its own left nav (as in Fireflies), so the app sidebar and topbar step aside there. */
 function Frame({ children }: { children: ReactNode }) {
-  const standalone = usePathname().startsWith('/settings');
+  const path = usePathname();
+  const standalone = path.startsWith('/settings');
+  const [navOpen, setNavOpen] = useState(false);          // mobile drawer
+  useEffect(() => { setNavOpen(false); }, [path]);        // close after navigating
+  useEffect(() => {                                       // never leave the drawer open when widening to desktop
+    const mq = window.matchMedia('(min-width: 768px)');
+    const fn = () => mq.matches && setNavOpen(false);
+    mq.addEventListener('change', fn);
+    return () => mq.removeEventListener('change', fn);
+  }, []);
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <Banner />
       <div className="flex min-h-0 flex-1">
-        {!standalone && <Sidebar />}
+        {!standalone && <Sidebar open={navOpen} onClose={() => setNavOpen(false)} />}
         <div className="flex min-w-0 flex-1 flex-col">
-          {!standalone && <Topbar />}
+          {!standalone && <Topbar onMenu={() => setNavOpen(true)} />}
           <main className={standalone ? 'relative flex min-h-0 flex-1' : 'page-glow relative flex min-h-0 flex-1 flex-col overflow-y-auto'}>{children}</main>
         </div>
       </div>
