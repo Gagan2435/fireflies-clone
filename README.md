@@ -2,8 +2,8 @@
 
 A functional clone of the Fireflies.ai meeting assistant for the SDE Fullstack assignment: a meetings library, interactive transcripts with a seekable player, AI-style summaries and action items, full CRUD, and the Fireflies workspace chrome (sidebar, Ctrl+K search, capture menu, modals, toasts, settings, dark/light theme).
 
-- **Live demo:** `<add deployed URL>`
-- **API docs (Swagger):** `<backend URL>/docs`
+- **Live demo:** https://fireflies-clone-one-virid.vercel.app
+- **API docs (Swagger):** https://fireflies-api-es2t.onrender.com/docs
 
 Real speech-to-text, live bots, integrations, teams and authentication are out of scope. Those screens are present and say **Coming soon** (see [Placeholders](#placeholders)).
 
@@ -40,7 +40,7 @@ On Windows, `run.bat` or `run.ps1` does both steps. The frontend talks to `http:
 Useful commands:
 
 ```bash
-cd backend && python -m pytest -q                 # 10 API tests
+cd backend && python -m pytest -q                 # 15API tests
 cd backend && python -m app.seed.run --reset      # wipe and re-seed the database
 cd frontend && npx tsc --noEmit && npm run build  # typecheck + production build
 # browser tests (need `pip install playwright && playwright install chromium`, both servers running,
@@ -58,7 +58,8 @@ python e2e/smoke_test.py && python e2e/m4_test.py
 | **CRUD**: create by uploading `.txt/.vtt/.srt/.json` or pasting a transcript; edit title and participants; delete (cascades); add, edit, complete and delete action items; everything persists in SQLite | `/uploads`, meeting page, `/tasks` |
 | **Fireflies experience**: sidebar (full or rail), topbar, profile menu, notifications, help button, Capture split-button and modals, toasts, settings, plan page | app shell, `/settings`, `/upgrade` |
 | **Bonus**: comments and soundbites on transcript lines; export to Markdown, TXT and PDF; global search (Ctrl+K); tags; Ask Fred chat; dark, light and system themes | throughout |
-
+| **Responsive layout**: sidebar becomes an off-canvas drawer with a hamburger toggle below the `md` breakpoint; compact top bar, adaptive player controls, stacked settings | app shell, `/settings`, `/meetings/[id]` |
+| **Transcript parsing**: speakers detected from `Name: text` and `Name - text` lines; action items extracted from "I will…", "Name will…", "we need to…", "X has to…" and short tasks like "I will mail you", with assignee and due-date parsing | `services/transcript_parser`, `services/notes_engine` |
 The player is **simulated** (a clock) unless a meeting has a `media_url`, in which case a real `<audio>` element is used. The UI labels it "Sample playback".
 
 ## Architecture
@@ -92,6 +93,9 @@ Design decisions worth knowing:
 - **Ask Fred** answers only from stored data: intent detection plus keyword retrieval over transcripts by default, Claude if a key is set. Answers list their source meetings. History is persisted per meeting, plus one workspace-wide thread.
 - **Time zones.** Datetimes are stored as UTC and always serialised with a `Z`, so the browser never shifts them.
 - **Seed data** is dated relative to first boot ("2 days ago"), so the library always looks current.
+- **Speaker detection.** A `Name - text` dash line is treated as a speaker label only when most lines in the transcript use that format, so ordinary sentences such as "Well - I think so" are not misread as speakers.
+- **Action-item heuristics.** The notes engine is rule-based, not a real AI model, so not every sentence will produce an action item. For the most reliable results, use `Name: text` lines or timestamps. Set `ANTHROPIC_API_KEY` for LLM-based extraction.
+- **Regenerate notes.** `POST /meetings/{id}/regenerate-notes` re-runs the notes pipeline but keeps the existing speaker names. To re-detect speakers, delete the meeting and upload the transcript again.
 
 ## Database schema
 
@@ -176,6 +180,12 @@ Per the assignment, these show "Coming soon" and do nothing real: live bot and C
 
 ## Testing
 
-- `backend/tests/test_api.py`: 10 API tests covering the seeded library, search/filter/sort, detail payload, create-from-paste and CRUD, upload formats, comments/soundbites/chat/search/export, cascade deletes, validation, and the notes engine on empty input.
+- `backend/tests/test_api.py`: 15 API tests, including regression tests for dash-separated speaker lines and obligation-style action items. search/filter/sort, detail payload, create-from-paste and CRUD, upload formats, comments/soundbites/chat/search/export, cascade deletes, validation, and the notes engine on empty input.
 - `e2e/smoke_test.py` (24 checks) and `e2e/m4_test.py` (44 checks): Playwright runs through the library, filters, transcript seek and search, action-item CRUD, create-by-paste, delete, Ask Fred, settings persistence, plan page, integrations, and the Coming soon pages.
 
+## Known limitations
+
+- Speech-to-text is not implemented; transcripts are seeded, pasted or uploaded.
+- Summaries and action items are heuristic (see Design decisions) and may miss some phrasing.
+- On free hosting the SQLite file is ephemeral: meetings created in the demo may reset after a restart or redeploy. The app re-seeds on an empty database.
+- The media player is simulated unless a meeting has a `media_url`.
