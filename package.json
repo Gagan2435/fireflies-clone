@@ -1,0 +1,13 @@
+{
+  "name": "fireflies-clone-root",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Fireflies.ai clone: meeting notes and transcripts",
+  "scripts": {
+    "dev:backend": "cd backend && python -m uvicorn app.main:app --reload --port 8000",
+    "dev:frontend": "cd frontend && npm run dev",
+    "seed": "cd backend && python -m app.seed.run --reset",
+    "test:backend": "cd backend && python -m pytest -q",
+    "build:frontend": "cd frontend && npm run build"
+  }
+}
