@@ -179,6 +179,3 @@ Per the assignment, these show "Coming soon" and do nothing real: live bot and C
 - `backend/tests/test_api.py`: 10 API tests covering the seeded library, search/filter/sort, detail payload, create-from-paste and CRUD, upload formats, comments/soundbites/chat/search/export, cascade deletes, validation, and the notes engine on empty input.
 - `e2e/smoke_test.py` (24 checks) and `e2e/m4_test.py` (44 checks): Playwright runs through the library, filters, transcript seek and search, action-item CRUD, create-by-paste, delete, Ask Fred, settings persistence, plan page, integrations, and the Coming soon pages.
 
-## Origin and originality
-
-The project started from an earlier prototype of the same assignment. The backend was rewritten as the modular package in `backend/app` (new schema, services, parser, notes engine, exporter, tests) and the frontend was rebuilt in `frontend/src`. The prototype's defects that were found and fixed are listed in `AUDIT.md`.
