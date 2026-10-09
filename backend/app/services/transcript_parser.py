@@ -47,6 +47,11 @@ _LINE_PATTERNS = [
 ]
 
 
+# "Gagan - hello there" / "Gagan – hello" / "Gagan — hello". Only used when most lines look like this,
+# so an ordinary sentence containing a dash is not mistaken for a speaker label.
+_DASH_LINE = re.compile(r"^(?P<s>[A-Z][\w.'-]*(?: [A-Z][\w.'-]*){0,2})\s+[-–—]\s+(?P<x>\S.*)$")
+
+
 def _finish(raw: List[dict]) -> List[Utterance]:
     """Fill in missing starts/ends and clean the text."""
     out: List[Utterance] = []
@@ -121,12 +126,12 @@ def _parse_json(raw: str) -> Optional[List[Utterance]]:
 
 def _parse_plain(raw: str) -> List[Utterance]:
     items: List[dict] = []
-    structured = any(pat.match(l.strip()) for l in raw.split("\n") for pat in _LINE_PATTERNS)
-    for line in raw.replace("\r\n", "\n").split("\n"):
-        line = line.strip()
-        if not line:
-            continue
-        for pat in _LINE_PATTERNS:
+    lines = [l.strip() for l in raw.replace("\r\n", "\n").split("\n") if l.strip()]
+    dash_hits = sum(1 for l in lines if _DASH_LINE.match(l) and not any(p.match(l) for p in _LINE_PATTERNS))
+    patterns = _LINE_PATTERNS + ([_DASH_LINE] if dash_hits >= 2 and dash_hits * 2 >= len(lines) else [])
+    structured = any(pat.match(l) for l in lines for pat in patterns)
+    for line in lines:
+        for pat in patterns:
             m = pat.match(line)
             if m:
                 g = m.groupdict()

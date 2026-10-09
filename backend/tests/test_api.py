@@ -168,3 +168,15 @@ def test_blank_values_rejected(c):
     assert c.patch("/api/meetings/1", json={"title": "  "}).status_code == 422
     assert c.post("/api/meetings/1/action-items", json={"text": "  "}).status_code == 422
     assert c.patch("/api/action-items/1", json={"text": " "}).status_code == 422
+
+
+def test_dash_speakers_and_obligation_action_items(c):
+    t = (b"Gagan - welcome everyone , we need to give the prototype to the client today till 6pm.\n"
+         b"Vasu - yes i have almost completed it . I will mail you")
+    m = _up(c, "Demo.txt", t, title="Demo").json()
+    assert [s["speaker_name"] for s in m["segments"]] == ["Gagan", "Vasu"]
+    texts = [a["text"].lower() for a in m["action_items"]]
+    assert any("prototype" in x for x in texts) and any(x.startswith("mail") for x in texts)
+    # an ordinary sentence containing a dash is not turned into a speaker
+    r = c.post("/api/meetings", json={"title": "x", "transcript_text": "Well - I think so.\nWe will see tomorrow."}).json()
+    assert {s["speaker_name"] for s in r["segments"]} == {"Speaker 1"}

@@ -193,8 +193,20 @@ _COMMIT = [
     re.compile(r"\b(?:I(?:'ll| will| can| am going to|'m going to| shall)|let me)\s+(?P<t>[^.!?]{8,})", re.I),
     re.compile(r"\b(?P<who>[A-Z][a-z]+)\s+(?:will|is going to|to)\s+(?P<t>[^.!?]{8,})"),
     re.compile(r"\b(?P<who>[A-Z][a-z]+),?\s+(?:can|could|would) you\s+(?P<t>[^.!?]{8,})", re.I),
+    re.compile(r"\b(?:we|you|they)\s+(?:need|have|has|must|should|ought)\s+to\s+(?P<t>[^.!?]{8,})", re.I),
+    re.compile(r"\b(?P<who>[A-Z][a-z]+)\s+(?:needs|need|has|have|must|should)\s+to\s+(?P<t>[^.!?]{8,})"),
     re.compile(r"\b(?:action item|todo|to-do|follow[- ]up)\s*[:\-]\s*(?P<t>[^.!?]{8,})", re.I),
 ]
+# Short tasks ("mail you", "send it over") count only when they start with a clear action verb.
+_VERBS = {"mail", "email", "send", "share", "call", "text", "update", "finish", "review", "complete", "schedule", "prepare",
+          "submit", "fix", "write", "deliver", "book", "check", "ping", "forward", "follow", "draft", "set", "create", "post"}
+
+
+def _too_short(task: str) -> bool:
+    w = task.split()
+    return len(w) < (2 if w and w[0].lower() in _VERBS else 4)
+
+
 _NOT_TASK = re.compile(r"^(see|say|be|think|agree|walk|tell|explain|show us|let you|get back to you on that|get ahead|take a look at that|"
                        r"designed|us\b|that\b|it\b|this\b|them\b)", re.I)
 
@@ -267,17 +279,17 @@ def extract_action_items(utts: List[Utterance], meeting_date: datetime, people: 
                 who = gd.get("who")
                 if who and who.lower() not in known:
                     who = None
-                if _NOT_TASK.match(task) or len(task.split()) < 4:
+                if _NOT_TASK.match(task) or _too_short(task):
                     continue
                 if re.search(r"\b(that|this|it)\s*$", task, re.I) and len(task.split()) < 6:
                     continue
                 if pat is _COMMIT[0]:
-                    assignee = u.speaker
+                    assignee = u.speaker if not re.fullmatch(r"Speaker \d+", u.speaker) else None
                 else:
                     assignee = known.get(who.lower()) if who else None
                 due, task = _parse_due(task, ref)
                 task = _clean_task(task)
-                if len(task.split()) < 4 or (re.search(r"\b(that|this|it)\s*$", task, re.I) and len(task.split()) < 6):
+                if _too_short(task) or (re.search(r"\b(that|this|it)\s*$", task, re.I) and len(task.split()) < 6):
                     continue
                 key = re.sub(r"\W", "", task.lower())[:40]
                 if len(task) < 8 or key in seen:
